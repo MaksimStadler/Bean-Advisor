@@ -12,6 +12,7 @@ weather_data = []
 
 # load file data
 icao_lut = pd.read_csv('station_lut.csv')
+bean_lut = pd.read_csv('bean_lut.csv')
 cloud_lut = pd.read_csv('cloud_lut.csv')
 cloud_dict = cloud_lut.set_index('Code')['Value'].to_dict()
 print(cloud_dict)
@@ -53,13 +54,12 @@ for code in weather_data:
     elif code[:3] in cloud_dict and 'sky' not in weather_dict:
         weather_dict['sky'] = cloud_dict[code[:3]]
     elif '/' in code:
-        weather_dict['temperature'] = float(
-            code.split('/')[0].replace('M', '-'))
+        weather_dict['temperature'] = int(code.split('/')[0].replace('M', '-'))
         break
 
 print(weather_dict)
 
-bean_value = ()%
+bean_value = sum([weather_dict[key] for key in weather_dict]) % len()
 
 # Determine quantity of bean
 

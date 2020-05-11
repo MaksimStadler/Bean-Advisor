@@ -1,11 +1,13 @@
-﻿1,Adzuki Beans
-2,Anasazi Beans
-3,Black Beans
-4,Borlotti Beans
-5,Butter Beans
-6,Cannellini Beans
-7,Christmas Lima Bean
-8,Corona Beans
+﻿value,type
+0,Adzuki Beans
+1,Anasazi Beans
+2,Black Beans
+3,Borlotti Beans
+4,Butter Beans
+5,Cannellini Beans
+6,Christmas Lima Bean
+7,Corona Beans
+8,Cranberry Beans
 9,Fava Beans
 10,Flageolet Beans
 11,Garbanzo Beans
@@ -31,4 +33,3 @@
 31,"Green, Yellow"
 32,Tepary Beans
 33,White Beans
-34,Cranberry Beans
