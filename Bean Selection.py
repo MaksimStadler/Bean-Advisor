@@ -2,8 +2,10 @@
 from datetime import *
 from requests import *
 import pandas as pd
-from math import *
+import numpy as np
 from bs4 import *
+
+print('Finding Location...')
 
 # set some variables
 codeColumn = 'Code'
@@ -13,9 +15,9 @@ weather_data = []
 # load file data
 icao_lut = pd.read_csv('station_lut.csv')
 bean_lut = pd.read_csv('bean_lut.csv')
+bean_list = list(bean_lut['type'])
 cloud_lut = pd.read_csv('cloud_lut.csv')
 cloud_dict = cloud_lut.set_index('Code')['Value'].to_dict()
-print(cloud_dict)
 
 # Collect location/weather/time data
 location_url = 'https://ipinfo.io'
@@ -25,7 +27,10 @@ location_data = eval(
 
 city = location_data['city'].upper()
 country = location_data['country'].upper()
-time = datetime.now()
+curr_time = datetime.now()
+
+print('{}, {}'.format(city, country))
+print('Chcecking the weather...')
 
 try:
     # filter icao_lut based on country/city
@@ -45,22 +50,24 @@ except Exception:
     print('Your location could not be identified. No beans for you.')
     raise
 
-print(weather_data)
-
 # Determine Type of bean
 for code in weather_data:
     if 'KT' in code:
-        weather_dict['windSpeed'] = int(code[3:5])
+        weather_dict['windSpeed'] = int(code[-4:-2])
     elif code[:3] in cloud_dict and 'sky' not in weather_dict:
         weather_dict['sky'] = cloud_dict[code[:3]]
     elif '/' in code:
         weather_dict['temperature'] = int(code.split('/')[0].replace('M', '-'))
         break
 
-print(weather_dict)
+print('Done')
 
-bean_value = sum([weather_dict[key] for key in weather_dict]) % len()
+bean_value = (np.prod([weather_dict[k] for k in weather_dict]) / 2) % (
+        len(bean_list) - 1)
+bean_type = bean_list[int(bean_value)]
 
 # Determine quantity of bean
+bean_quantity = (curr_time.hour * curr_time.minute) % 60 + 1
 
 # Inform user or bean dose
+print('We recommend you consume {0} {1}.'.format(bean_quantity, bean_type))
