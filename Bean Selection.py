@@ -70,4 +70,6 @@ bean_type = bean_list[int(bean_value)]
 bean_quantity = (curr_time.hour * curr_time.minute) % 60 + 1
 
 # Inform user or bean dose
+if bean_quantity == 1:
+    bean_type = bean_type[:-1]
 print('We recommend you consume {0} {1}.'.format(bean_quantity, bean_type))
