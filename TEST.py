@@ -1,2 +1,15 @@
-print(eval(
-    "{'ip': '147.194.224.114', 'hostname': '147-194-224-114.tpia.comwave.net', 'city': 'Toronto', 'region': 'Ontario', 'country': 'CA', 'loc': '43.7001, -79.4163', 'org': 'AS15128 Comwave Telecom Inc.', 'postal': 'M5N', 'timezone': 'America/Toronto', 'readme': 'https://ipinfo.io/missingauth'}"))
+import tkinter as tk
+import tkinter.ttk as ttk
+
+root = tk.Tk()
+frame = tk.Frame(root)
+frame.grid()
+s = ttk.Style()
+s.theme_use('clam')
+s.configure("red.Horizontal.TProgressbar", foreground='red', background='red')
+ttk.Progressbar(frame, style="red.Horizontal.TProgressbar", orient="horizontal",
+                length=600, mode="determinate", maximum=4, value=1).grid(row=1,
+                                                                         column=1)
+frame.pack()
+
+root.mainloop()

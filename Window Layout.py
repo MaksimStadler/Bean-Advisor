@@ -1,23 +1,22 @@
 # import required libraries
+import tkinter.ttk as ttk
 from datetime import *
 from requests import *
 from tkinter import *
-import pandas as pd
-from bs4 import *
 import time
 
 tk = Tk
 
 # set colour variables
-grey1 = '#222222'
+grey1 = '#111111'
 grey2 = '#333333'
-grey3 = '#444444'
-grey4 = '#555555'
-text1 = '#aaaaaa'
-text2 = '#777777'
+grey3 = '#555555'
+grey4 = '#777777'
+text1 = '#bbbbbb'
+text2 = '#999999'
 
 
-# defien splash screen
+# define splash screen
 class Splash(Toplevel):
     def __init__(self, parent):
         Toplevel.__init__(self, parent)
@@ -63,9 +62,51 @@ class BeanApp(tk):
         # set window title, icon, etc.
         self.title('Bean Advisor')
         self.iconbitmap(default='bean_advisor_icon.ico')
-        self.configure(background=grey2)
+        self.configure(background=grey1)
 
-        # define window features
+        # define window content
+        text = 'Press button for your recommended dose of  b e a n.'
+        instructions = Label(self, font=('Calibri', 13), bg=grey2, fg=text1,
+                             text=text)
+        instructions.place(relx=0.02, rely=0.015, relwidth=0.96,
+                           relheight=0.075)
+
+        bean_button = Button(self, text='PRESS FOR BEANS', font=('Calibri', 22),
+                             activebackground=grey3, activeforeground=text1,
+                             disabledforeground=text2, bg=grey2, fg=text1,
+                             relief='flat',
+                             borderwidth=0)
+        bean_button.place(relx=0.02, rely=0.105, relwidth=0.96,
+                          relheight=0.075)
+
+        bean = PhotoImage(file='Bean Advisor Logo (Small).png')
+        display = Label(self, text='BEAN', image=bean, font=('Calibri', 10),
+                        bg=grey2, fg=text1)
+        display.place(relx=0.02, rely=0.195, relwidth=0.96, relheight=0.6)
+
+        bean_info = Label(self, text='', font=('Calibri', 10), bg=grey2,
+                          fg=text1)
+        bean_info.place(relx=0.02, rely=0.81, relwidth=0.96, relheight=0.075)
+
+        progress_info = Label(self, text='', font=('Calibri', 10), bg=grey2,
+                              fg=text1)
+        progress_info.place(relx=0.02, rely=0.9, relwidth=0.96,
+                            relheight=0.04)
+
+        ttk.Style().theme_use('classic')
+        ttk.Style().configure('blue.Horizontal.TProgressbar',
+                              troughcolor=grey1,
+                              relief='flat',
+                              troughrelief='flat',
+                              borderwidth=0,
+                              background='007fff')
+        progress_bar = ttk.Progressbar(self, orient=HORIZONTAL,
+                                       mode='determinate',
+                                       style='blue.Horizontal.TProgressbar')
+
+        progress_bar['value'] = 30
+        progress_bar.place(relx=0.02, rely=0.94, relwidth=0.96,
+                           relheight=0.04)
 
         # terminate splash screen
         # simulate a delay while loading
@@ -76,6 +117,8 @@ class BeanApp(tk):
 
         # show window again
         self.deiconify()
+
+    # def bean_update(self):
 
 
 BeanApp().mainloop()
