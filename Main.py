@@ -2,9 +2,12 @@
 Program that tells you an edible variety of bean to eat based on the 'weather',
 and how many of said bean to eat according to the date and temperature.
 
-Splash screen code from James Kent on Stack Overflow
+Splash screen code modified from James Kent on Stack Overflow
 '''
+
 # import required libraries
+import PIL.Image as im
+import PIL.ImageTk as itk
 import tkinter.ttk as ttk
 from datetime import *
 from requests import *
@@ -12,10 +15,16 @@ from tkinter import *
 import pandas as pd
 import numpy as np
 from bs4 import *
+import pyglet
 import time
 
 # simplify tkinter
 tk = Tk
+
+# import fonts
+pyglet.font.add_file('fonts/VoyaNui_1.15_0.ttf')
+pyglet.font.add_file('fonts/DIN 1451 Mittelschrift Regular.ttf')
+pyglet.font.add_file('fonts/DINLiA.ttf')
 
 # set some variables
 codeColumn = 'Code'
@@ -28,7 +37,6 @@ grey2 = '#333333'
 grey3 = '#555555'
 grey4 = '#777777'
 text1 = '#bbbbbb'
-text2 = '#999999'
 
 
 # define required functions
@@ -98,6 +106,7 @@ def get_bean_data():
 
     bean_value = (np.prod([weather_dict[k] for k in weather_dict]) / 2) % (
             len(bean_list) - 1)
+    global bean_type
     bean_type = bean_list[int(bean_value)]
 
     # Determine quantity of bean
@@ -105,7 +114,8 @@ def get_bean_data():
 
     # Inform user or bean dose
     if bean_quantity == 1:
-        bean_type = bean_type[:-1]
+        return 'We recommend you consume {0} {1}.'.format(bean_quantity,
+                                                          bean_type[:-1])
     return 'We recommend you consume {0} {1}.'.format(bean_quantity, bean_type)
 
 
@@ -145,7 +155,7 @@ class BeanApp(tk):
 
         # set window size and position on screen
         width = 400
-        height = 600
+        height = 500
         ws = self.winfo_screenwidth()
         hs = self.winfo_screenheight()
         x = (ws / 2) - (width / 2)
@@ -160,49 +170,48 @@ class BeanApp(tk):
         self.configure(background=grey1)
 
         # define window content
-        text = 'Press button for your recommended dose of  b e a n.'
-        self.instructions = Label(font=('Calibri', 13), bg=grey2,
-                                  fg=text1,
-                                  text=text)
-        self.instructions.place(relx=0.02, rely=0.015, relwidth=0.96,
-                                relheight=0.075)
+        text = 'Press button for your recommended dose of b e a n.'
+        self.instructions = Label(font=('DIN 1451 Mittelschrift', 13), bg=grey2,
+                                  fg=text1, text=text)
+        self.instructions.place(relx=0.015, rely=0.015, relwidth=0.97,
+                                relheight=0.05)
 
-        self.bean_button = Button(text='PRESS FOR BEANS',
-                                  font=('Calibri', 22),
+        self.bean_button = Button(text='PRESS FOR BEANS', font=('Voya Nui', 22),
                                   command=lambda: self.bean_update(),
                                   activebackground=grey3,
-                                  activeforeground=text1,
-                                  disabledforeground=text2, bg=grey2, fg=text1,
-                                  relief='flat',
-                                  borderwidth=0)
-        self.bean_button.place(relx=0.02, rely=0.105, relwidth=0.96,
-                               relheight=0.075)
+                                  activeforeground=text1, bg=grey2, fg=text1,
+                                  relief='flat', borderwidth=0,
+                                  anchor='s', pady=5)
+        self.bean_button.place(relx=0.015, rely=0.08, relwidth=0.97,
+                               relheight=0.08)
 
-        bean = PhotoImage(file='Bean Advisor Logo (Small).png')
-        self.display = Label(text='BEAN', image=bean,
-                             font=('Calibri', 10),
-                             bg=grey2, fg=text1)
-        self.display.place(relx=0.02, rely=0.195, relwidth=0.96, relheight=0.6)
+        self.display = Label(text='BEAN', bg=grey2, fg=text1)
+        image = im.open('Bean Advisor Logo (Small).png')
+        image.thumbnail((300, 300))
+        self.image = itk.PhotoImage(image)
+        self.display.configure(image=self.image)
+        self.display.place(relx=0.015, rely=0.175, relwidth=0.97, relheight=0.7)
 
-        self.bean_info = Label(text='', font=('Calibri', 14), bg=grey2,
-                               fg=text1)
-        self.bean_info.place(relx=0.02, rely=0.81, relwidth=0.96,
-                             relheight=0.075)
+        self.bean_info = Label(text='', font=('DIN 1451 Mittelschrift', 12),
+                               bg=grey2, fg=text1)
+        self.bean_info.place(relx=0.015, rely=0.89, relwidth=0.97,
+                             relheight=0.055)
 
-        self.progress_info = Label(text='', font=('Calibri', 10),
-                                   bg=grey2,
-                                   fg=text1)
-        self.progress_info.place(relx=0.02, rely=0.9, relwidth=0.96,
-                                 relheight=0.04)
-
-        ttk.Style().configure('black.Horizontal.TProgressbar',
-                              background='black', foreground='black')
-        self.progress_bar = ttk.Progressbar(orient=HORIZONTAL,
+        ttk.Style().theme_use('classic')
+        ttk.Style().configure('Horizontal.TProgressbar', background='#007fff',
+                              troughcolor=grey2, relief='flat',
+                              troughrelief='flat', borderwidth=0)
+        self.progress_bar = ttk.Progressbar(self, orient=HORIZONTAL,
                                             mode='determinate',
-                                            style='black.Horizontal.TProgressbar')
+                                            style='Horizontal.TProgressbar')
 
-        self.progress_bar.place(relx=0.02, rely=0.94, relwidth=0.96,
-                                relheight=0.04)
+        self.progress_bar.place(relx=0.015, rely=0.945, relwidth=0.97,
+                                relheight=0.015)
+
+        self.progress_info = Label(text='', font=('Courier New', 8), anchor='w',
+                                   padx=-10, bg=grey1, fg=text1)
+        self.progress_info.place(relx=0.01, rely=0.96, relwidth=0.97,
+                                 relheight=0.03)
 
         # simulate a delay while loading
         time.sleep(1)
@@ -213,15 +222,21 @@ class BeanApp(tk):
         # show window again
         self.deiconify()
 
+    # animate progress bar and simulate delay
     def animate_progress(self, start, stop):
         for i in range(start, stop):
             self.progress_bar['value'] = i
             self.update_idletasks()
             time.sleep(0.01)
 
+    # update bean data
     def bean_update(self):
         self.progress_info.configure(text='Processing request...')
         self.bean_info.config(text='Waiting for bean data...')
+        image = im.open('Bean Advisor Logo (Small).png')
+        image.thumbnail((300, 300))
+        self.image = itk.PhotoImage(image)
+        self.display.configure(image=self.image)
         self.update_idletasks()
         self.animate_progress(0, 20)
         self.progress_info.configure(text='Finding your location...')
@@ -242,6 +257,10 @@ class BeanApp(tk):
         final_update = 'Done.'
         if weather_error:
             final_update = 'Error: Weather data could not be found'
+        image = im.open('beans/' + bean_type + '.png')
+        image.thumbnail((300, 300))
+        self.image = itk.PhotoImage(image)
+        self.display.configure(image=self.image)
         self.animate_progress(80, 101)
         self.progress_info.configure(text=final_update)
         self.bean_info.config(text=bean_data)

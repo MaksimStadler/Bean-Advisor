@@ -51,7 +51,7 @@ class BeanApp(tk):
 
         # set window size and position on screen
         width = 400
-        height = 600
+        height = 500
         ws = self.winfo_screenwidth()
         hs = self.winfo_screenheight()
         x = (ws / 2) - (width / 2)
@@ -95,16 +95,17 @@ class BeanApp(tk):
 
         ttk.Style().theme_use('classic')
         ttk.Style().configure('blue.Horizontal.TProgressbar',
+                              background='#007fff',
+                              foreground=grey4,
                               troughcolor=grey1,
                               relief='flat',
                               troughrelief='flat',
-                              borderwidth=0,
-                              background='007fff')
+                              borderwidth=0)
         progress_bar = ttk.Progressbar(self, orient=HORIZONTAL,
                                        mode='determinate',
                                        style='blue.Horizontal.TProgressbar')
 
-        progress_bar['value'] = 30
+        progress_bar['value'] = 20
         progress_bar.place(relx=0.02, rely=0.94, relwidth=0.96,
                            relheight=0.04)
 
