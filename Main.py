@@ -257,11 +257,11 @@ class BeanApp(tk):
         final_update = 'Done.'
         if weather_error:
             final_update = 'Error: Weather data could not be found'
+        self.animate_progress(80, 101)
         image = im.open('beans/' + bean_type + '.png')
         image.thumbnail((300, 300))
         self.image = itk.PhotoImage(image)
         self.display.configure(image=self.image)
-        self.animate_progress(80, 101)
         self.progress_info.configure(text=final_update)
         self.bean_info.config(text=bean_data)
         self.update_idletasks()
